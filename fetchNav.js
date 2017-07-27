@@ -35,19 +35,20 @@ function readtoArray(fileLoc,arr){
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-url="http://portal.amfiindia.com/DownloadNAVHistoryReport_Po.aspx?mf=22&frmdt=01-Apr-2015&todt=30-Apr-2017"
-frmdt="01-Apr-2017";
+url="http://portal.amfiindia.com/DownloadNAVHistoryReport_Po.aspx?mf=22&frmdt=01-Apr-2017&todt=30-Apr-2017"
+frmdt="01-Apr-2016";
 todt="26-Jul-2017";
 mf=22;
-src="http://portal.amfiindia.com/DownloadNAVHistoryReport_Po.aspx?mf="+mf.toString()+"&frmdt="+frmdt+"&todt="+todt;
-
+src="http://portal.amfiindia.com/DownloadNAVHistoryReport_Po.aspx?mf="+mf+"&frmdt="+frmdt+"&todt="+todt;
+console.log(src);
+//src=url;
 userAgents = readtoArray('UserAgents.txt'); //importing the user-agents
 lines=[];
 
 var options = {  
   uri: src,
   proxy: proxy, //'http://' + proxyList[getRandomInt(0,25)], //proxy,
-  headers: {'User-Agent': userAgents[getRandomInt(0,25)].replace(/"/g,'').trim()},
+  //headers: {'User-Agent': userAgents[getRandomInt(0,25)].replace(/"/g,'').trim()},
   transform: function (body, response, resolveWithFullResponse) {
         return body;
     }
@@ -64,6 +65,7 @@ rp.get(options)
       fs.writeFileSync('nav.csv',''); //deleting the contents of the file
       for(i=0;i<lines.length;i++){
           log('writing: '+lines[i]);
+          //if()
           fs.appendFileSync('nav.csv',lines[i].toString().replace(/;/g,','),'utf-8');
       }  
   })
