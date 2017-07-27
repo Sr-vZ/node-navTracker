@@ -35,6 +35,11 @@ function readtoArray(fileLoc,arr){
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+url="http://portal.amfiindia.com/DownloadNAVHistoryReport_Po.aspx?mf=22&frmdt=01-Apr-2015&todt=30-Apr-2017"
+frmdt="01-Apr-2017";
+todt="26-Jul-2017";
+mf=22;
+src="http://portal.amfiindia.com/DownloadNAVHistoryReport_Po.aspx?mf="+mf.toString()+"&frmdt="+frmdt+"&todt="+todt;
 
 userAgents = readtoArray('UserAgents.txt'); //importing the user-agents
 lines=[];
@@ -55,6 +60,7 @@ rp.get(options)
       //console.log(body)
       //ls = _.uniq(ls);
       lines=body.toString().split('\n');
+      console.log('Remote data received! Processing...');
       fs.writeFileSync('nav.csv',''); //deleting the contents of the file
       for(i=0;i<lines.length;i++){
           log('writing: '+lines[i]);
