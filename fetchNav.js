@@ -66,7 +66,12 @@ rp.get(options)
       for(i=0;i<lines.length;i++){
           log('writing: '+lines[i]);
           //if()
-          fs.appendFileSync('nav.csv',lines[i].toString().replace(/;/g,','),'utf-8');
+          fs.appendFile('nav.csv',lines[i].toString().replace(/;/g,','),'utf-8',function(err){
+            if(err){
+              console.log('file writing error!' + err);
+            }              
+            console.log('File saved!');
+          });
       }  
   })
   .catch(function(e){
