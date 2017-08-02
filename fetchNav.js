@@ -3,7 +3,8 @@ const cheerio = require('cheerio');
 var Promise = require('bluebird');  
 var fs = require('fs');  
 Promise.promisifyAll(fs);
-var sys = require('sys');
+//var sys = require('sys');
+var progress = require('request-progress');
 
 //var request = Promise.promisify(require("request"), {multiArgs: true});
 //Promise.promisifyAll(request, {multiArgs: true});
@@ -37,7 +38,7 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 url="http://portal.amfiindia.com/DownloadNAVHistoryReport_Po.aspx?mf=22&frmdt=01-Apr-2017&todt=30-Apr-2017"
-frmdt="01-Apr-2010";
+frmdt="01-Apr-2011";
 todt="01-Aug-2017";
 mf=22;
 src="http://portal.amfiindia.com/DownloadNAVHistoryReport_Po.aspx?mf="+mf+"&frmdt="+frmdt+"&todt="+todt;
@@ -54,8 +55,8 @@ var options = {
         return body;
     }
 }
-/*
-rp.get(options)
+
+/* rp.get(options)
   .then(function (body){
       $ = cheerio.load(body);
       //links = $('a'); //jquery get all hyperlinks
@@ -63,7 +64,7 @@ rp.get(options)
       //ls = _.uniq(ls);
       lines=body.toString().split('\n');
       
-      console.log('Remote data received! Processing...');
+      console.log(lines.length,' Remote data received! Processing...');
       fs.writeFileSync('./data/nav.csv',''); //deleting the contents of the file
       
       for(i=0;i<lines.length;i++){
@@ -76,18 +77,18 @@ rp.get(options)
             console.log('File saved!');
           });
           //fs.close('./data/nav.csv');
-      }
-      fs.writeFile('./data/nav.csv',body.toString().replace(/;/g,','),function(err){
+      }   
+         fs.writeFile('./data/nav.csv',body.toString().replace(/;/g,','),function(err){
         if(err){
               console.log('file writing error!' + err);
             }              
             console.log('File saved!');
-      })  
+      })
   })
   .catch(function(e){
     console.log(e);
   })
-*/
+ */
 
 /* var writeStream = fs.createWriteStream('nav.csv');
 request({'url':url,'proxy':proxy}, function(err, res) {
@@ -98,7 +99,7 @@ request({'url':url,'proxy':proxy}, function(err, res) {
     
 }); */
 
-var filename = 'navtest1.txt';
+/* var filename = 'navtest1.txt';
 var dlprogress = 0;
 
  var stream = request
@@ -110,11 +111,11 @@ var dlprogress = 0;
     //console.log(resp.toString().length);
         var downloadfile = fs.createWriteStream(filename, {'flags': 'a'});
         console.log("File size " + filename + ": " + response.headers['content-length'] + " bytes.");
-        response.on('data', function (chunk) {
+        response.addListener('data', function (chunk) {
             dlprogress += chunk.length;
             downloadfile.write(chunk, encoding='binary');
         });
-        response.on("end", function() {
+        response.addListener("end", function() {
             downloadfile.end();
             console.log("Finished downloading " + filename);
         });
@@ -124,16 +125,16 @@ var dlprogress = 0;
 stream.on('finish', function () {
   console.log('file saved!');
 });
-/* request({'url':url,'proxy':proxy},function(err,res){
+ request({'url':url,'proxy':proxy},function(err,res){
   if(err){
     console.log(err);
   }
   res.on('finish',function(){
     res.pipe(fs.createWriteStream('navtest.txt'));
   })
-}); */
+}); 
 
-/* request.on('response', function (response) {
+request.on('response', function (response) {
         var downloadfile = fs.createWriteStream(filename, {'flags': 'a'});
         sys.puts("File size " + filename + ": " + response.headers['content-length'] + " bytes.");
         response.addListener('data', function (chunk) {
@@ -146,3 +147,34 @@ stream.on('finish', function () {
         });
 
 }); */
+var googleFin = 'https://www.google.com/finance?q=%5B%28exchange+%3D%3D+%22MUTF_IN%22%29%5D&ei=vo2BWcGcNY22uATRooyQBQ';
+
+progress(request({'url':url,'proxy':proxy,timeout: 12000}),{
+    throttle: 2000,                    // Throttle the progress event to 2000ms, defaults to 1000ms 
+    delay: 1000,                       // Only start to emit after 1000ms delay, defaults to 0ms 
+    //lengthHeader: 'x-transfer-length'  // Length header to use, defaults to content-length 
+    })
+    .on('error',function(err){
+      console.log(err);
+    })
+    .on('progress', function (state) {
+    // The state is an object that looks like this: 
+    // { 
+    //     percent: 0.5,               // Overall percent (between 0 to 1) 
+    //     speed: 554732,              // The download speed in bytes/sec 
+    //     size: { 
+    //         total: 90044871,        // The total payload size in bytes 
+    //         transferred: 27610959   // The transferred payload size in bytes 
+    //     }, 
+    //     time: { 
+    //         elapsed: 36.235,        // The total elapsed seconds since the start (3 decimals) 
+    //         remaining: 81.403       // The remaining seconds to finish (3 decimals) 
+    //     } 
+    // } 
+    log(console.log('progress', state));
+    })
+    .on('end', function () {
+    // Do something after request finishes
+      console.log('file saved!');
+    })
+    .pipe(fs.createWriteStream('nav.csv'))
