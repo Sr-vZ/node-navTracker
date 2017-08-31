@@ -43,7 +43,7 @@ proxy = 'http://proxy.intra.bt.com:8080';
 url = 'https://www.google.com/finance/historical?q=MUTF_IN%3AHDFC_LIQU_DIR_1SY277O&startdate=Aug+1%2C+2001&enddate=Aug+2%2C+2017&noIL=1&num=30000&ei=O6iBWZitGI67ugS8vYeQBw';
 //https://www.google.com/finance/historical?q=MUTF_IN:HDFC_LIQU_DIR_1SY277O&startdate=Aug+1,+2001&enddate=Aug+2,+2017&noIL=1&num=30000&ei=O6iBWZitGI67ugS8vYeQBw
 fund = fundSym[getRandomInt(1,200)];
-startDate = 'Aug 1, 2014';
+startDate = 'Aug 1, 2010';
 endDate = 'Aug 2, 2017';
 url = 'https://www.google.com/finance/historical?q=MUTF_IN%3A'+fund+'&startdate='+startDate+'&enddate='+endDate+'&noIL=1&num=30000&ei=O6iBWZitGI67ugS8vYeQBw';
 //url = encodeURI(url);
@@ -67,7 +67,7 @@ rp(options)
         //gf-table historical_price
         //console.log(body);
         console.log(navtable.text());
-        fs.writeFileSync('googNavop.txt',navtable.text(),function(err){
+        fs.writeFile('googNavop.txt',navtable.text(),function(err){
             console.log('file saved!');
         });
     })
