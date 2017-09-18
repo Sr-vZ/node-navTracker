@@ -4,9 +4,15 @@ var fs = require('fs');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-    
-    res.end( "test");
-    fs.readFile();
+    res.setHeader('Content-Type', 'application/json');
+    //res.end("test");
+    //console.log(__dirname)
+    fs.readFile('/','googMFsym.csv',function(data,err){
+        if(err){
+            console.log(err)
+        }
+        res.write(JSON.stringify(data));
+    });
 })
 
 
